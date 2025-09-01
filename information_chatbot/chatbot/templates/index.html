@@ -1,0 +1,127 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="A chatbot for campus information">
+    <meta name="author" content="Mga Gikapoy">
+    <link rel="icon" type="image/png" href="{% static 'assets/icons/link_icon.png' %}">
+    <link rel="stylesheet" href="{% static 'css/nav_sidebar.css' %}">
+    <link rel="stylesheet" href="{% static 'css/chatbox.css' %}">
+    <title>Campus Information Chatbot</title>
+</head>
+<body>
+    <!-- Navigation Sidebar -->
+    <nav class="nav-sidebar" id="navSidebar">
+
+        <div class="nav-brand">
+            <!-- Brand Image -->
+            <div class="brand-logo">
+                <img src="{% static 'assets/icons/link_icon.png' %}" alt="Campus Information Chatbot Logo">
+            </div>
+            <!-- Brand Title -->
+            <h1 id = "title">CI Bot</h1>
+        </div>
+
+
+        <!-- Top Nav Section -->
+        <div class = "nav-top">
+            <!-- Navigation Links -->
+             <ul class = "nav-links">
+                <li>
+                    <a href="#newChat" class = "nav-link">
+                        <span class="nav-icon">
+                            <img src="new_chat_icon.png" alt="New Chat">
+                        </span>
+                        <span>New Chat</span>
+                    </a>
+                    <a href="#Find" class = "nav-link">
+                        <span class="nav-icon">
+                            <img src="find_icon.png" alt="Find">
+                        </span>
+                        <span>Find</span>
+                    </a>
+                </li>
+             </ul>
+        </div>
+
+        <!-- Separator -->
+        <div class = "nav-separator"></div>
+        <!-- Theme Toggle -->
+            <div class = "theme-toggle">
+                <button class="theme-btn" id="themeToggle"></button>
+            </div>
+        <!-- Bottom Nav Section -->
+        <div class = "nav-bottom">
+            <ul class = "nav-links">
+                <li>
+                    <a href="#Login/Logout" class = "nav-link">
+                        <span class="nav-icon">
+                            <img src="profile_icon.png" alt="Login/Logout">
+                        </span>
+                        <span>Logout</span>
+                    </a>
+                    <a href="#Help" class = "nav-link">
+                        <span class="nav-icon">
+                            <img src="help_icon.png" alt="Help">
+                        </span>
+                        <span>Help</span>
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </nav>
+    <!-- Toggle Button -->
+    <button class="nav-toggle" id="navToggle">
+        <span class="bar"></span>
+        <span class="bar"></span>
+        <span class="bar"></span>
+    </button>
+
+    <main class="main-content">
+        <div class="chat-container">
+            <!-- Chat Header -->
+            <header class="chat-header">
+                <h1 class="chat-title">Campus Information Chatbot</h1>
+                <p class="chat-subtitle">Ask me anything about campus facilities, services, and information</p>
+            </header>
+
+            <!-- Chat Messages Area -->
+            <div class="chat-messages" id="chatMessages">
+                <!-- Welcome Message -->
+                <div class="welcome-message" id="welcomeMessage">
+                    <h2 class="welcome-title">Hello, User!</h2>
+                    <p class="welcome-subtitle">Welcome to the Campus Information Chatbot. How can I help you today?</p>
+                    <div class="quick-actions">
+                        <div class="quick-action">Campus Map</div>
+                        <div class="quick-action">Library Hours</div>
+                        <div class="quick-action">Student Services</div>
+                        <div class="quick-action">Contact Info</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Chat Input Area -->
+            <div class="chat-input-container">
+                <div class="chat-input-wrapper">
+                    <textarea class="chat-input" id="chatInput" placeholder="Type your message here..." rows="1"></textarea>
+                    <button class="send-button" id="sendButton">
+                        <span>→</span>
+                    </button>
+                </div>
+                <div class="input-helper">Press Enter to send, Shift+Enter for new line</div>
+            </div>
+        </div>
+
+        <!-- Status Indicator -->
+        <div class="status-indicator online" id="statusIndicator">
+            ● Online
+        </div>
+    </main>
+    <script src="{% static 'js_scripts/nav_sidebar.js' %}"></script>
+    <script src="{% static 'js_scripts/chat.js' %}"></script>
+    <script src="{% static 'js_scripts/data_manager.js' %}"></script>
+
+</body>
+</html>
