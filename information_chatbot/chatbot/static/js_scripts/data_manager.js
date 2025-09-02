@@ -19,6 +19,7 @@
 
 class DataManager{
     // a pq object mut be passed on to this argument (attributes include: question, answer, category)
+    @csrf_exempt
     postRequest(url, data) {
         // starting a network request with fetch()
         // This method is a modern JS way to make HTTP requests (messagge a client sends to a server)
