@@ -73,27 +73,31 @@ class Chat{
         this.autoResizeTextarea();
     }
 
-    simulateBotResponse(question){
+    simulateBotResponse(question) {
         this.showTypingIndicator();
         this.updateStatus('typing');
-        
-        // Simulate processing time
-        const responseTime = Math.random() * 2000 + 1500; // 1.5-3.5 seconds
-        
-        setTimeout(() => {
-            this.removeTypingIndicator();
-            this.updateStatus('online');
 
-            const response = this.generateBotResponse(question);
-            // A promise is an object that represents the eventual result of an asynchronous operation
-            if (response instanceof Promise) {
-                // When a Promise resolves, .then() is called automatically, and the resolved data is passed
-                // as an argument inside .then()
-                response.then(resolved => this.addBotMessage(resolved));
-            } else {
-                this.addBotMessage(response);
-            }
-        }, responseTime);
+        const minDelay = 2000; // 2 seconds
+        const startTime = Date.now();
+
+        const response = this.generateBotResponse(question);
+
+        const showResponse = (resolvedResponse) => {
+            const elapsed = Date.now() - startTime;
+            const remaining = Math.max(minDelay - elapsed, 0);
+
+            setTimeout(() => {
+                this.removeTypingIndicator();
+                this.updateStatus('online');
+                this.addBotMessage(resolvedResponse);
+            }, remaining);
+        };
+
+        if (response instanceof Promise) {
+            response.then(resolved => showResponse(resolved));
+        } else {
+            showResponse(response);
+        }
     }
 
     addBotMessage(message){
@@ -102,26 +106,21 @@ class Chat{
 
     generateBotResponse(question) {
         if (this.admin) {  
-            // Admin-only commands
             if (!this.addingPQ && question.startsWith("-pq add")) {
                 this.addingPQ = true;
+                this.newPQ.category = question.substring(7).trim();
                 this.pqStep = 1;
-                this.newPQ = {};
                 return "Please enter the question:";
             }
+
 
             if (this.addingPQ) {
                 if (this.pqStep === 1) {
                     this.newPQ.question = question;
                     this.pqStep = 2;
-                    return "Got it. Now, enter the category name:";
+                    return "Got it. Now, enter the answer:";
                 }
                 if (this.pqStep === 2) {
-                    this.newPQ.category = question; // later map to Category.id
-                    this.pqStep = 3;
-                    return "Great. Finally, enter the answer:";
-                }
-                if (this.pqStep === 3) {
                     this.newPQ.answer = question;
                     this.pqStep = 0;
                     this.addingPQ = false;
@@ -131,6 +130,42 @@ class Chat{
 
                     return "✅ Question added successfully to the database!";
                 }
+            }
+
+            if(question.startsWith("-pq show categories")){
+                return this.manager.getRequest('/fetch_cat/')
+                .then(data => {
+                    return "Categories: " + data.map(cat => cat.name).join(", ");
+                });
+            }
+
+            if (question.startsWith("-pq show all")) {
+                return this.manager.getRequest('/fetch_pqs')
+                    .then(data => {
+                        if (!Array.isArray(data) || data.length === 0) {
+                            return "⚠️ No predefined questions found.";
+                        }
+                        // Group by category
+                        const grouped = {};
+                        data.forEach(item => {
+                            const cat = item.category__name || "Uncategorized";
+                            if (!grouped[cat]) grouped[cat] = [];
+                            grouped[cat].push(item);
+                        });
+                    
+                        // Format each category and its questions
+                        const formatted = Object.entries(grouped).map(([category, items]) => {
+                            const questions = items.map((item, index) => {
+                                return `   ───────────── 📌 Q${index + 1} ─────────────
+                                ❓ ${item.question}
+                                💡 ${item.answer}`;
+                            }).join("\n\n");
+                        
+                            return `📂 Category: **${category}**\n${questions}`;
+                        }).join("\n\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n");
+                    
+                        return `📚 Predefined Questions\n\n${formatted}`;
+                    });
             }
         }
 

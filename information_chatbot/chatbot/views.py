@@ -35,6 +35,9 @@ def add_pq(request):
         return JsonResponse({"status" : "success", "id" : pq.id})
     return JsonResponse({"status" : "error"}, status=400)
 
+def fetch_cat(request):
+    categories = Category.objects.all().values("name")
+    return JsonResponse(list(categories), safe=False)
 
 def fetch_pqs(request):
     # the double underscore after category means that we are fetching the actual name, not the foreign key

@@ -66,8 +66,8 @@ class DataManager{
         return cookieValue;
     }
 
-    fetchPQList() {
-        return fetch('/fetch_pqs/', {
+    getRequest(url) {
+        return fetch(url, {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json',
@@ -75,7 +75,7 @@ class DataManager{
         })
         .then(response => response.json())
         .then(data => {
-            console.log("Fetched PQs:", data);
+            console.log("Fetched Data:", data);
             return data; // ✅ return the actual data
         })
         .catch(error => {
